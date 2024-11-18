@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ClipboardList } from 'lucide-react';
 import StudentForm from './components/StudentForm';
 import StudentLog from './components/StudentLog';
-import { StudentLog as StudentLogType, Destination } from './types';
+import { StudentLogEntry as StudentLogType, Destination } from './types';
 
 function App() {
   const [logs, setLogs] = useState<StudentLogType[]>([]);
