@@ -3,18 +3,22 @@ import { ClipboardList } from 'lucide-react';
 import StudentForm from './components/StudentForm';
 import StudentLog from './components/StudentLog';
 import { StudentLogEntry as StudentLogType, Destination } from './types';
+import PocketBase from 'pocketbase';
+const pb = new PocketBase("http://127.0.0.1:8090");
+
 
 function App() {
   const [logs, setLogs] = useState<StudentLogType[]>([]);
 
-  const handleCheckOut = (name: string, destination: Destination) => {
+  const handleCheckOut = async (name: string, destination: Destination) => {
     const newLog: StudentLogType = {
       id: crypto.randomUUID(),
       name,
       destination,
       checkOutTime: new Date(),
     };
-    setLogs(prev => [newLog, ...prev]);
+    const record: StudentLogType = await pb.collection('StudentLogEntries').create(newLog);
+    setLogs(prev => [record, ...prev]);
   };
 
   const handleCheckIn = (id: string) => {
