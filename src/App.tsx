@@ -24,12 +24,13 @@ function App() {
     setLogs(prev => [newLog, ...prev]);
   };
 
-  const handleCheckIn = (id: string) => {
+  const handleCheckIn = async (id: string) => {
     setLogs(prev =>
       prev.map(log =>
         log.id === id ? { ...log, checkInTime: new Date() } : log
       )
     );
+    const record = await pb.collection('StudentLogEntries').update(id, {checkintime:new Date().toUTCString()});
   };
 
   return (
