@@ -12,13 +12,16 @@ function App() {
 
   const handleCheckOut = async (name: string, destination: Destination) => {
     const newLog: StudentLogType = {
-      id: crypto.randomUUID(),
       name,
       destination,
       checkOutTime: new Date(),
     };
-    const record: StudentLogType = await pb.collection('StudentLogEntries').create(newLog);
-    setLogs(prev => [record, ...prev]);
+    const record: StudentLogType = await pb.collection('StudentLogEntries').create({
+      name:newLog.name,
+      destination:newLog.destination,
+      checkouttime: newLog.checkOutTime.toUTCString()
+    });
+    setLogs(prev => [newLog, ...prev]);
   };
 
   const handleCheckIn = (id: string) => {
