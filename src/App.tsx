@@ -11,17 +11,13 @@ function App() {
   const [logs, setLogs] = useState<StudentLogType[]>([]);
 
   const handleCheckOut = async (name: string, destination: Destination) => {
-    const newLog: StudentLogType = {
-      name,
-      destination,
-      checkOutTime: new Date(),
-    };
+    
     const record: StudentLogType = await pb.collection('StudentLogEntries').create({
-      name:newLog.name,
-      destination:newLog.destination,
-      checkouttime: newLog.checkOutTime.toUTCString()
+      name:name,
+      destination:destination,
+      checkouttime: new Date().toUTCString()
     });
-    setLogs(prev => [newLog, ...prev]);
+    setLogs(prev => [record, ...prev]);
   };
 
   const handleCheckIn = async (id: string) => {
