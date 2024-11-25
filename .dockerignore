@@ -1,0 +1,8 @@
+node_modules
+Dockerfile
+.git
+.gitignore
+dist/**
+README.md
+.bolt
+db
