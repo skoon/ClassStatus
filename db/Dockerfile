@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-ARG PB_VERSION=0.22.27
+ARG PB_VERSION=0.23.1
 
 RUN apk add --no-cache \
     unzip \
@@ -16,7 +16,7 @@ COPY ./pb_migrations/StudentLogEntries_initialize /pb/pb_migrations/1731966407_c
 # uncomment to copy the local pb_hooks dir into the image
 # COPY ./pb_hooks /pb/pb_hooks
 
-EXPOSE 8080
+EXPOSE 8090
 
 # start PocketBase
 CMD ["/pb/pocketbase", "serve", "--http=127.0.0.1:8090"]

@@ -3,7 +3,7 @@ import { StudentLogEntry } from '../types';
 import { format } from 'date-fns';
 
 interface Props {
-  logs: StudentLogEntry[]; //fetch entries from db here.
+  logs: StudentLogEntry[]; 
   onCheckIn: (id: string) => void;
 }
 
@@ -11,6 +11,11 @@ export default function StudentLog({ logs, onCheckIn }: Props) {
   const activeStudents = logs.filter(log => !log.checkInTime);
   const completedLogs = logs.filter(log => log.checkInTime).slice(0, 10);
 
+
+
+
+
+  
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
       {activeStudents.length > 0 && (
