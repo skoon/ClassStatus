@@ -3,7 +3,7 @@ import { StudentLogEntry } from '../types';
 import { format } from 'date-fns';
 
 interface Props {
-  logs: StudentLog[];
+  logs: StudentLogEntry[]; //fetch entries from db here.
   onCheckIn: (id: string) => void;
 }
 
