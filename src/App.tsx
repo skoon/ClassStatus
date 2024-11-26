@@ -11,22 +11,23 @@ function App() {
   const [logs, setLogs] = useState<StudentLogType[]>([]);
 
   const handleCheckOut = async (name: string, destination: Destination) => {
-    const newLog: StudentLogType = {
-      id: crypto.randomUUID(),
-      name,
-      destination,
-      checkOutTime: new Date(),
-    };
-    const record: StudentLogType = await pb.collection('StudentLogEntries').create(newLog);
+    
+    const record: StudentLogType = await pb.collection('StudentLogEntries').create({
+      name:name,
+      destination:destination,
+      checkouttime: new Date().toUTCString()
+    });
     setLogs(prev => [record, ...prev]);
   };
 
-  const handleCheckIn = (id: string) => {
+  const handleCheckIn = async (id: string) => {
+    const record = await pb.collection('StudentLogEntries').update(id, {checkintime:new Date().toUTCString()});
     setLogs(prev =>
       prev.map(log =>
-        log.id === id ? { ...log, checkInTime: new Date() } : log
+        log.id === record.id ? { ...log, checkInTime: new Date() } : log
       )
     );
+    
   };
 
   return (
