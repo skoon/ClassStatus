@@ -12,8 +12,35 @@ pb.authStore.save(auth_token, null);
 function App() {
   const [logs, setLogs] = useState<StudentLogType[]>([]);
 
+  const getLogs =  async() => {
+    //grab current logs.
+    console.log("getting logs");
+    const records = await pb.collection('StudentLogEntries').getFullList({
+     sort: '-checkouttime',
+   });
+     console.log("Settings logs" + records);
+     records.map( (rec) => {
+      console.log(rec);
+      console.log(rec.checkouttime);
+      console.log(rec.checkintime);
+      const newRec:StudentLogType = {
+        id:rec.id,
+        name:rec.name,
+        destination: rec.destination,
+        checkOutTime:new Date(rec.checkouttime),
+        checkInTime:rec.checkintime
+      }
+
+        setLogs(prev => [newRec, ...prev]);
+  }
+     );
+
+     
+   }
+   
+
   const handleCheckOut = async (name: string, destination: Destination) => {
-    
+      
     const record: StudentLogType = await pb.collection('StudentLogEntries').create({
       name:name,
       destination:destination,
@@ -44,7 +71,7 @@ function App() {
         </header>
 
         <StudentForm onCheckOut={handleCheckOut} />
-        <StudentLog logs={logs} onCheckIn={handleCheckIn} />
+        <StudentLog logs={logs} onCheckIn={handleCheckIn} fetchLogs={getLogs} />
       </div>
     </div>
   );

@@ -1,17 +1,22 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { StudentLogEntry } from '../types';
-import { format } from 'date-fns';
+import { format, getDate } from 'date-fns';
 
 interface Props {
   logs: StudentLogEntry[]; 
   onCheckIn: (id: string) => void;
+  fetchLogs: () => StudentLogEntry[];
 }
 
-export default function StudentLog({ logs, onCheckIn }: Props) {
+
+export default function StudentLog({ logs, onCheckIn, fetchLogs }: Props) {
   const activeStudents = logs.filter(log => !log.checkInTime);
   const completedLogs = logs.filter(log => log.checkInTime).slice(0, 10);
 
-
+  useEffect(() => {
+    console.log("useEffect");
+    logs = fetchLogs();
+  }, []);
 
 
 
