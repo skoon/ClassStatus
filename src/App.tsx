@@ -4,14 +4,47 @@ import StudentForm from './components/StudentForm';
 import StudentLog from './components/StudentLog';
 import { StudentLogEntry as StudentLogType, Destination } from './types';
 import PocketBase from 'pocketbase';
-const pb = new PocketBase("http://127.0.0.1:8090");
 
+const auth_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJwYmNfMzE0MjYzNTgyMyIsImV4cCI6MTczMjc0NDUzNSwiaWQiOiI5NHo3NThieWo4ZzJlNngiLCJyZWZyZXNoYWJsZSI6ZmFsc2UsInR5cGUiOiJhdXRoIn0.qL3rFgk-NjblM5ZWbm1Nb0SwDtzAg5Ub18njuc3w12s";
+const pb = new PocketBase("http://10.31.0.138:8090");
+pb.authStore.save(auth_token, null);
 
 function App() {
   const [logs, setLogs] = useState<StudentLogType[]>([]);
 
+  const getLogs =  async() => {
+    //grab current logs.
+    console.log("getting logs");
+    const records = await pb.collection('StudentLogEntries').getFullList({
+     sort: '-checkouttime',
+   });
+     console.log("Settings logs" + records);
+     records.map( (rec) => {
+      console.log(rec);
+      console.log(rec.checkouttime);
+      console.log(rec.checkintime);
+      const newRec:StudentLogType = {
+        id:rec.id,
+        name:rec.name,
+        destination: rec.destination,
+        checkOutTime:new Date(rec.checkouttime),
+        checkInTime:rec.checkintime
+      }
+
+        setLogs(prev => [newRec, ...prev]);
+  }
+     );
+
+     
+   }
+   
+
   const handleCheckOut = async (name: string, destination: Destination) => {
+<<<<<<< HEAD
     
+=======
+      
+>>>>>>> f6300c635867b363a0f356823400287aa65886eb
     const record: StudentLogType = await pb.collection('StudentLogEntries').create({
       name:name,
       destination:destination,
@@ -42,7 +75,7 @@ function App() {
         </header>
 
         <StudentForm onCheckOut={handleCheckOut} />
-        <StudentLog logs={logs} onCheckIn={handleCheckIn} />
+        <StudentLog logs={logs} onCheckIn={handleCheckIn} fetchLogs={getLogs} />
       </div>
     </div>
   );
