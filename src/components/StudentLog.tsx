@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import { StudentLogEntry } from '../types';
-import { format, getDate } from 'date-fns';
+import { format } from 'date-fns';
 
 interface Props {
   logs: StudentLogEntry[]; 
