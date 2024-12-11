@@ -5,7 +5,7 @@ import { format, getDate } from 'date-fns';
 interface Props {
   logs: StudentLogEntry[]; 
   onCheckIn: (id: string) => void;
-  fetchLogs: () => StudentLogEntry[];
+  fetchLogs: () => Promise<StudentLogEntry[]>;
 }
 
 

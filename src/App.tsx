@@ -18,6 +18,7 @@ function App() {
     const records = await pb.collection('StudentLogEntries').getFullList({
      sort: '-checkouttime',
    });
+   let mappedRecords:StudentLogType[] = [];
      console.log("Settings logs" + records);
      records.map( (rec) => {
       console.log(rec);
@@ -30,13 +31,12 @@ function App() {
         checkOutTime:new Date(rec.checkouttime),
         checkInTime:rec.checkintime
       }
-
+        mappedRecords.push(newRec);
         setLogs(prev => [newRec, ...prev]);
-  }
-     );
-
+    });
+    return mappedRecords;
      
-   }
+  }
    
 
   const handleCheckOut = async (name: string, destination: Destination) => {
