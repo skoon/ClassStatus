@@ -3,11 +3,7 @@ import { StudentLogEntry } from '../types';
 import { format, getDate } from 'date-fns';
 
 interface Props {
-<<<<<<< HEAD
-  logs: StudentLogEntry[]; //fetch entries from db here.
-=======
   logs: StudentLogEntry[]; 
->>>>>>> f6300c635867b363a0f356823400287aa65886eb
   onCheckIn: (id: string) => void;
   fetchLogs: () => StudentLogEntry[];
 }

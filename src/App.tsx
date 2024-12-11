@@ -40,11 +40,7 @@ function App() {
    
 
   const handleCheckOut = async (name: string, destination: Destination) => {
-<<<<<<< HEAD
-    
-=======
       
->>>>>>> f6300c635867b363a0f356823400287aa65886eb
     const record: StudentLogType = await pb.collection('StudentLogEntries').create({
       name:name,
       destination:destination,
