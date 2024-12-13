@@ -16,20 +16,22 @@ function App() {
     //grab current logs.
     console.log("getting logs");
     const records = await pb.collection('StudentLogEntries').getFullList({
-     sort: '-checkOutTime',
+     sort: '+checkOutTime',
    });
    let mappedRecords:StudentLogType[] = [];
 
      records.map( (rec) => {
-      const newRec:StudentLogType = {
-        id:rec.id,
-        name:rec.name,
-        destination: rec.destination,
-        checkOutTime:new Date(rec.checkOutTime),
-        checkInTime: rec.checkInTime != ""? new Date(rec.checkInTime) : rec.checkInTime
+      if(new Date(rec.checkOutTime).getDate() == new Date().getDate()) {
+        const newRec:StudentLogType = {
+          id:rec.id,
+          name:rec.name,
+          destination: rec.destination,
+          checkOutTime:new Date(rec.checkOutTime),
+          checkInTime: rec.checkInTime != ""? new Date(rec.checkInTime) : rec.checkInTime
+        }
+          mappedRecords.push(newRec);
+          setLogs(prev => [newRec, ...prev]);
       }
-        mappedRecords.push(newRec);
-        setLogs(prev => [newRec, ...prev]);
     });
     return mappedRecords;
      
@@ -51,7 +53,7 @@ function App() {
     const record = await pb.collection('StudentLogEntries').update(id, {checkInTime:new Date()});
     setLogs(prev =>
       prev.map(log =>
-        log.id === id ? { ...log, checkInTime: new Date() } : log
+        log.id === id ? { ...log, checkInTime: new Date(record.checkInTime) } : log
       )
     );
     
