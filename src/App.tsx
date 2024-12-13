@@ -23,13 +23,13 @@ function App() {
      records.map( (rec) => {
       console.log(rec);
       console.log(rec.checkouttime);
-      console.log(rec.checkintime);
+      console.log("CheckInTime=" + rec.checkintime);
       const newRec:StudentLogType = {
         id:rec.id,
         name:rec.name,
         destination: rec.destination,
         checkOutTime:new Date(rec.checkouttime),
-        checkInTime:rec.checkintime
+        checkInTime: rec.checkintime != ""? new Date(rec.checkintime) : rec.checkintime
       }
         mappedRecords.push(newRec);
         setLogs(prev => [newRec, ...prev]);
