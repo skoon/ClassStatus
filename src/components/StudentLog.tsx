@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 interface Props {
   logs: StudentLogEntry[]; 
   onCheckIn: (id: string) => void;
-  fetchLogs: () => StudentLogEntry[];
+  fetchLogs: () => Promise<StudentLogEntry[]>;
 }
 
 
@@ -15,7 +15,10 @@ export default function StudentLog({ logs, onCheckIn, fetchLogs }: Props) {
 
   useEffect(() => {
     console.log("useEffect");
-    logs = fetchLogs();
+    logs = fetchLogs().then( (records:StudentLogEntry[])=> {
+      return records;
+    });
+    
   }, []);
 
 

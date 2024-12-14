@@ -16,44 +16,44 @@ function App() {
     //grab current logs.
     console.log("getting logs");
     const records = await pb.collection('StudentLogEntries').getFullList({
-     sort: '-checkouttime',
+     sort: '+checkOutTime',
    });
-     console.log("Settings logs" + records);
+   let mappedRecords:StudentLogType[] = [];
+
      records.map( (rec) => {
-      console.log(rec);
-      console.log(rec.checkouttime);
-      console.log(rec.checkintime);
-      const newRec:StudentLogType = {
-        id:rec.id,
-        name:rec.name,
-        destination: rec.destination,
-        checkOutTime:new Date(rec.checkouttime),
-        checkInTime:rec.checkintime
+      if(new Date(rec.checkOutTime).getDate() == new Date().getDate()) {
+        const newRec:StudentLogType = {
+          id:rec.id,
+          name:rec.name,
+          destination: rec.destination,
+          checkOutTime:new Date(rec.checkOutTime),
+          checkInTime: rec.checkInTime != ""? new Date(rec.checkInTime) : rec.checkInTime
+        }
+          mappedRecords.push(newRec);
+          setLogs(prev => [newRec, ...prev]);
       }
-
-        setLogs(prev => [newRec, ...prev]);
-  }
-     );
-
+    });
+    return mappedRecords;
      
-   }
+  }
    
 
   const handleCheckOut = async (name: string, destination: Destination) => {
       
-    const record: StudentLogType = await pb.collection('StudentLogEntries').create({
+    const record:StudentLogType = await pb.collection('StudentLogEntries').create({
       name:name,
       destination:destination,
-      checkouttime: new Date().toUTCString()
+      checkOutTime: new Date()
     });
-    setLogs(prev => [record, ...prev]);
+
+    setLogs(prev => [record, ...prev]);   
   };
 
   const handleCheckIn = async (id: string) => {
-    const record = await pb.collection('StudentLogEntries').update(id, {checkintime:new Date().toUTCString()});
+    const record = await pb.collection('StudentLogEntries').update(id, {checkInTime:new Date()});
     setLogs(prev =>
       prev.map(log =>
-        log.id === record.id ? { ...log, checkInTime: new Date() } : log
+        log.id === id ? { ...log, checkInTime: new Date(record.checkInTime) } : log
       )
     );
     
