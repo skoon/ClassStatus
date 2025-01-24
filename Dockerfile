@@ -1,23 +1,38 @@
-# frontend/Dockerfile
-FROM node:alpine AS prod
+FROM alpine:latest
 
-WORKDIR /app
+ARG PB_VERSION=0.23.1
 
-COPY . /app
+RUN apk add --no-cache \
+    unzip \
+    ca-certificates
 
+# download and unzip PocketBase
+ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip /tmp/pb.zip
+RUN unzip /tmp/pb.zip -d /pb/
+
+# uncomment to copy the local pb_migrations dir into the image
+COPY ./pb_migrations/StudentLogEntries_initialize /pb/pb_migrations/1731966407_created_StudenLogEntries
+
+
+FROM node:lts-alpine as build-frontend
+WORKDIR /dist
+COPY ./frontend/package*.json ./
 RUN npm install
-
+COPY ./frontend/ .
 RUN npm run build
 
-COPY dist /app
+FROM golang:1.18 AS build-backend
 
-FROM nginx:alpine
+RUN mkdir /app
+ADD ./backend /app
+COPY --from=build-frontend /app/dist /app/pb_public
+WORKDIR /app
 
-WORKDIR /usr/local/bin
+RUN CGO_ENABLED=0 GOOS=linux go build -o <binary-name> .
 
-COPY --from=prod /app/dist /usr/share/nginx/html
+FROM alpine:latest AS production
+COPY --from=build-backend /app .
 
-COPY nginx_template /etc/nginx/conf.d/
-
-EXPOSE 8080
-
+EXPOSE 8090
+# start PocketBase
+CMD ["/pb/pocketbase", "serve", "--http=127.0.0.1:8090"]
