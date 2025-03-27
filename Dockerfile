@@ -10,4 +10,4 @@ RUN npm run build
 
 EXPOSE 8090
 # start PocketBase and node app
-CMD ["./dist/npm start"]
+CMD ["npm", "start"]
