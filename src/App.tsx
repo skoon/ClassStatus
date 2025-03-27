@@ -5,8 +5,16 @@ import StudentLog from './components/StudentLog';
 import { StudentLogEntry as StudentLogType, Destination } from './types';
 import PocketBase from 'pocketbase';
 
-const auth_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJwYmNfMzE0MjYzNTgyMyIsImV4cCI6MTczMjc0NDUzNSwiaWQiOiI5NHo3NThieWo4ZzJlNngiLCJyZWZyZXNoYWJsZSI6ZmFsc2UsInR5cGUiOiJhdXRoIn0.qL3rFgk-NjblM5ZWbm1Nb0SwDtzAg5Ub18njuc3w12s";
+
+
+
 const pb = new PocketBase("http://10.31.0.138:8091");
+const authData = await pb.collection('users').authWithPassword(
+  'leuser@lhs.edu',
+  'lepassword',
+);
+
+const auth_token = pb.authStore.token;
 pb.authStore.save(auth_token, null);
 
 function App() {
