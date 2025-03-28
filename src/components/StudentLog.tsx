@@ -25,7 +25,7 @@ export default function StudentLog({ logs, onCheckIn, fetchLogs }: Props) {
 
   
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6">
+    <div id="studentLogs" className="w-full max-w-4xl mx-auto space-y-6">
       {activeStudents.length > 0 && (
         <div className="bg-white rounded-xl shadow-lg p-6">
           <h2 className="text-xl font-semibold mb-4">Currently Out</h2>
