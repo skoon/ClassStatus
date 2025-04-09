@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { ClipboardList } from 'lucide-react';
 import StudentForm from './components/StudentForm';
 import StudentLog from './components/StudentLog';
@@ -7,8 +7,8 @@ import PocketBase from 'pocketbase';
 
 
 
-
-const pb = new PocketBase("http://10.31.0.138:8091");
+const pburl = process.env.REACT_APP_POCKETBASE_URL;
+const pb = new PocketBase(pburl);
 
 async function authenticateUser() {
   if (!pb.authStore.isValid) {
