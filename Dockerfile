@@ -1,23 +1,13 @@
-# frontend/Dockerfile
-FROM node:alpine AS prod
 
+FROM node:lts-alpine as build-frontend
 WORKDIR /app
-
-COPY . /app
-
+COPY ./package*.json ./
 RUN npm install
 
+COPY ./ .
 RUN npm run build
 
-COPY dist /app
 
-FROM nginx:alpine
-
-WORKDIR /usr/local/bin
-
-COPY --from=prod /app/dist /usr/share/nginx/html
-
-COPY nginx_template /etc/nginx/conf.d/
-
-EXPOSE 8080
-
+EXPOSE 8090
+# start PocketBase and node app
+CMD ["npm", "start"]

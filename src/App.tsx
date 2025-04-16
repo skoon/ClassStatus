@@ -1,25 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { ClipboardList } from 'lucide-react';
 import StudentForm from './components/StudentForm';
 import StudentLog from './components/StudentLog';
 import { StudentLogEntry as StudentLogType, Destination } from './types';
 import PocketBase from 'pocketbase';
 
-const auth_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJwYmNfMzE0MjYzNTgyMyIsImV4cCI6MTczMjc0NDUzNSwiaWQiOiI5NHo3NThieWo4ZzJlNngiLCJyZWZyZXNoYWJsZSI6ZmFsc2UsInR5cGUiOiJhdXRoIn0.qL3rFgk-NjblM5ZWbm1Nb0SwDtzAg5Ub18njuc3w12s";
-const pb = new PocketBase("http://10.31.0.138:8090");
-pb.authStore.save(auth_token, null);
 
+
+const pburl = process.env.REACT_APP_POCKETBASE_URL;
+const pb = new PocketBase(pburl);
+
+async function authenticateUser() {
+  if (!pb.authStore.isValid) {
+    try {
+      const authData = await pb.collection('users').authWithPassword(
+        'leuser@lhs.edu', // Replace with the user's email
+        'lepassword'      // Replace with the user's password
+      );
+
+      console.log('Authenticated successfully:', authData);
+
+      // The token is automatically saved in the authStore
+      console.log('Auth token:', pb.authStore.token);
+    } catch (error) {
+      console.error('Authentication failed:', error);
+    }
+  }
+}
+
+// Call the function to authenticate
+//authenticateUser();
 function App() {
   const [logs, setLogs] = useState<StudentLogType[]>([]);
+  
 
   const getLogs =  async() => {
+    authenticateUser();
     //grab current logs.
     console.log("getting logs");
     const records = await pb.collection('StudentLogEntries').getFullList({
      sort: '+checkOutTime',
    });
    let mappedRecords:StudentLogType[] = [];
-
+   console.log("records", records);
      records.map( (rec) => {
       if(new Date(rec.checkOutTime).getDate() == new Date().getDate()) {
         const newRec:StudentLogType = {
@@ -33,13 +56,14 @@ function App() {
           setLogs(prev => [newRec, ...prev]);
       }
     });
+    console.log("mappedRecords", mappedRecords);
     return mappedRecords;
      
   }
    
 
   const handleCheckOut = async (name: string, destination: Destination) => {
-      
+    authenticateUser();
     const record:StudentLogType = await pb.collection('StudentLogEntries').create({
       name:name,
       destination:destination,
@@ -48,7 +72,7 @@ function App() {
 
     setLogs(prev => [record, ...prev]);   
   };
-
+  authenticateUser();
   const handleCheckIn = async (id: string) => {
     const record = await pb.collection('StudentLogEntries').update(id, {checkInTime:new Date()});
     setLogs(prev =>
